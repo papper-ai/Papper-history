@@ -1,7 +1,6 @@
 import asyncio
 from datetime import datetime
 import motor.motor_asyncio
-import req
 
 async def main():
     # Подключение к MongoDB
