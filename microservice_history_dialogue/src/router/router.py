@@ -1,25 +1,31 @@
-from schemas import Document, Message
-from fastapi import APIRouter, Request
-from utils import MongoDBClient
-from bson import ObjectId
+from typing import Annotated
 
-router = APIRouter(tags=["Mongo Base"])
+from uuid import UUID
+from bson.objectid import ObjectId
 
-db_name = "chat_history"
-collection_name = "dialogs"
+from fastapi import APIRouter, Body, status
 
-db_client = MongoDBClient(db_name, collection_name)
+from schemas import Chat
+from microservice_history_dialogue.src.database.mongodb import MongoDBClient
 
-
-@router.post('/chats')
-async def create_chat(request: Request):
-    request_data = await request.json()
-    chat = Document(**request_data)
-    chat_id = await db_client.insert_document(chat)
-    return {"chat_id": str(chat_id)}
+hd_router = APIRouter(tags=["Mongo Base"])
 
 
-@router.delete('/chats/{chat_id}')
-async def delete_chat(chat_id: str):
-    await db_client.delete_document(ObjectId(chat_id))
-    return {"message": "Chat deleted"}
+@hd_router.post("/upload", status_code=status.HTTP_201_CREATED)
+async def upload(input: Annotated[Chat, Body(...)]) -> None:
+    chat_data = input.dict()
+
+    async def save_chat_in_db():
+        collection.insert_one(chat_data)
+
+    return {"message": "Chat created successfully"}
+
+
+@hd_router.delete("/delete", status_code=status.HTTP_204_NO_CONTENT)
+async def delete(vault_id: Annotated[UUID, Body(embed=True)]) -> None:
+    chat_id_obj = ObjectId(vault_id)
+
+    async def delete_chat_from_db():
+        collection.delete_one({"chat_id": chat_id_obj})
+
+    return {"message": "Chat deleted successfully"}

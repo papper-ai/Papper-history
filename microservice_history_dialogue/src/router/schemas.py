@@ -1,16 +1,31 @@
-from typing import List, Dict
+from typing import List
 from uuid import UUID
+from pydantic import BaseModel, Field
 
-from pydantic import BaseModel
+
+class Role(str):
+    user = "user"
+    ai = "ai"
 
 
-class Message(BaseModel):
-    role: str
+class TracebackItem(BaseModel):
+    document_id: UUID
+    information: str
+
+
+class MessageItem(BaseModel):
+    role: Role
     message: str
-    traceback: List[Dict[str, str]]
+    traceback: List[TracebackItem] = Field(default=[])
 
 
-class Document(BaseModel):
+class ChatHistory(BaseModel):
+    history: List[MessageItem]
+
+
+class Chat(BaseModel):
     chat_id: UUID
     name: str
-    history: List[Message]
+    history: ChatHistory
+
+
