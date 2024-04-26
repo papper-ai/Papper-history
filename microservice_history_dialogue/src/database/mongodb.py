@@ -1,14 +1,13 @@
 from motor.motor_asyncio import AsyncIOMotorClient
 
+client = AsyncIOMotorClient("mongodb://localhost:27017")
+db = client["chat_history"]
+collection = db["dialogs"]
 
-class MongoDBClient:
-    def __init__(self, db_name, collection_name):
-        self.client = AsyncIOMotorClient('mongodb://localhost:27017/')
-        self.db = self.client[db_name]
-        self.collection = self.db[collection_name]
 
-    async def insert_document(self, document):
-        return await self.collection.insert_one(document)
+async def insert_document(document):
+    return await collection.insert_one(document)
 
-    async def delete_document(self, chat_id):
-        return await self.collection.delete_one({"chat_id": chat_id})
+
+async def delete_document(chat_id):
+    return await collection.delete_one({"chat_id": chat_id})

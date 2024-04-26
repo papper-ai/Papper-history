@@ -3,29 +3,19 @@ from uuid import UUID
 from pydantic import BaseModel, Field
 
 
-class Role(str):
-    user = "user"
-    ai = "ai"
-
-
-class TracebackItem(BaseModel):
+class Traceback(BaseModel):
     document_id: UUID
     information: str
 
 
-class MessageItem(BaseModel):
-    role: Role
+class Message(BaseModel):
+    role: str
     message: str
-    traceback: List[TracebackItem] = Field(default=[])
+    traceback: List[Traceback] = Field(default=[])
 
 
-class ChatHistory(BaseModel):
-    history: List[MessageItem]
-
-
-class Chat(BaseModel):
+class ChatData(BaseModel):
     chat_id: UUID
     name: str
-    history: ChatHistory
-
+    history: List[Message]
 
