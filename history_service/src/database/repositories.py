@@ -2,9 +2,12 @@ import logging
 from abc import ABC, abstractmethod
 
 from motor.motor_asyncio import AsyncIOMotorClient
+
 from src.config import settings
 
-client = AsyncIOMotorClient(settings.database_url,uuidRepresentation='standard', minPoolSize=12, maxPoolSize=16)
+client = AsyncIOMotorClient(
+    settings.database_url, uuidRepresentation="standard", minPoolSize=12, maxPoolSize=16
+)
 db = client[settings.db_name]
 
 
@@ -29,28 +32,37 @@ class HistoryRepository(AbstractRepository):
 
         result = await self.collection.insert_one(entity)
         return result
-    
+
     async def get(self, chat_id):
         document = await self.collection.find_one({"_id": chat_id})
         return document
 
     async def delete(self, chat_id):
-        logging.info(type(chat_id))
         await self.collection.delete_one({"_id": chat_id})
 
+    async def add_message(self, chat_id, message):
+        await self.collection.update_one(
+            {"_id": chat_id},
+            {"$push": {"history": message}},
+        )
+
     async def clean_history(self, chat_id):
-        result = await self.collection.update_one(
+        await self.collection.update_one(
             {"_id": chat_id},
             {
                 "$unset": {
                     field: "" for field in await self.get_fields_to_unset(chat_id)
-                }
+                },
             },
         )
-        return result
+
+        await self.collection.update_one(
+            {"_id": chat_id},
+            {"$set": {"history": []}},
+        )
 
     async def get_fields_to_unset(self, chat_id):
-        # Retrieve the document you want to clean
+        # Retrieve the document to clean
         document = await self.collection.find_one({"_id": chat_id})
         if document:
             # Create a list of all fields to unset, excluding '_id'
