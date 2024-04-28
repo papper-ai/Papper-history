@@ -1,4 +1,3 @@
-import logging
 from uuid import UUID
 
 from src.database.repositories import HistoryRepository
