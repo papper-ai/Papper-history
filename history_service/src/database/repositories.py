@@ -46,7 +46,7 @@ class HistoryRepository(AbstractRepository):
             {"$push": {"history": message}},
         )
 
-    async def clean_history(self, chat_id):
+    async def clear_history(self, chat_id):
         await self.collection.update_one(
             {"_id": chat_id},
             {

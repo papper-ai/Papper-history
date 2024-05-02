@@ -10,7 +10,7 @@ from src.history.schemas import AIMessage, UserMessage
 from src.history.utils import (
     add_ai_message,
     add_user_message,
-    clean_history,
+    clear_history,
     create_history,
     delete_history,
     get_history,
@@ -44,12 +44,12 @@ async def add_ai_message_route(
     await add_ai_message(chat_id, message, history_repository)
 
 
-@router.post("/clean_history", status_code=status.HTTP_200_OK)
-async def clean_history_route(
+@router.post("/clear_history", status_code=status.HTTP_200_OK)
+async def clear_history_route(
     chat_id: Annotated[UUID, Body(embed=True)],
     history_repository: Annotated[HistoryRepository, Depends(history_exists)],
 ) -> None:
-    await clean_history(chat_id, history_repository)
+    await clear_history(chat_id, history_repository)
 
 
 @router.delete("/delete_history", status_code=status.HTTP_200_OK)
