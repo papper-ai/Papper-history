@@ -6,6 +6,7 @@ from pydantic import BaseModel
 
 class TracebackUnit(BaseModel):
     document_id: UUID
+    document_name: str | None
     information: str
 
 

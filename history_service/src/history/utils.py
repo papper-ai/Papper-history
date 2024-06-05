@@ -48,6 +48,7 @@ async def add_ai_message(
         "traceback": [
             {
                 "document_id": traceback_unit.document_id,
+                "document_name": traceback_unit.document_name if traceback_unit.document_name else None,
                 "information": traceback_unit.information,
             }
             for traceback_unit in message.traceback
