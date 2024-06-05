@@ -17,9 +17,7 @@ async def delete_history(chat_id: UUID, history_repository: HistoryRepository) -
     await history_repository.delete(chat_id=chat_id)
 
 
-async def get_history(
-    chat_id: UUID, history_repository: HistoryRepository
-) -> dict:
+async def get_history(chat_id: UUID, history_repository: HistoryRepository) -> dict:
     history = await history_repository.get(chat_id=chat_id)
     return {"chat_id": history["_id"], "history": history["history"]}
 
@@ -48,7 +46,9 @@ async def add_ai_message(
         "traceback": [
             {
                 "document_id": traceback_unit.document_id,
-                "document_name": traceback_unit.document_name if traceback_unit.document_name else None,
+                "document_name": traceback_unit.document_name
+                if traceback_unit.document_name
+                else None,
                 "information": traceback_unit.information,
             }
             for traceback_unit in message.traceback

@@ -1,4 +1,3 @@
-import logging
 from abc import ABC, abstractmethod
 
 from motor.motor_asyncio import AsyncIOMotorClient
