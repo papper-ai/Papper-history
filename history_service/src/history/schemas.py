@@ -6,13 +6,13 @@ from pydantic import BaseModel
 
 class TracebackUnit(BaseModel):
     document_id: UUID
-    document_name: str | None
+    document_name: str
     information: str
 
 
 class AIMessage(BaseModel):
     content: str
-    traceback: List[TracebackUnit | None]
+    traceback: List[TracebackUnit | None] = []
 
 
 class UserMessage(BaseModel):
