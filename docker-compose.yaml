@@ -1,6 +1,7 @@
 services:
   history_service_mongo:
     image: mongo:7.0.9-rc1
+    restart: unless-stopped
     volumes:
       - history_service_mongo_data:/data/db
     environment:
@@ -13,6 +14,7 @@ services:
       - history_services_network
   history_service:
     build: history_service
+    restart: unless-stopped
     volumes:
       - ./history_service:/usr/src/history_service
     env_file:
