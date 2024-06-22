@@ -1,9 +1,10 @@
 services:
-  history_service_mongo:
+  papper-history-service-mongo:
     image: mongo:7.0.9-rc1
+    container_name: papper-history-service-mongo
     restart: unless-stopped
     volumes:
-      - history_service_mongo_data:/data/db
+      - papper-history-service-mongo-volume:/data/db
     environment:
       - MONGO_INITDB_DATABASE=${HISTORY_SERVICE_MONGO_DB_NAME}
       - MONGO_INITDB_ROOT_USERNAME=${HISTORY_SERVICE_MONGO_DB_USER}
@@ -11,9 +12,10 @@ services:
     ports:
       - 8410:27017
     networks:
-      - history_services_network
-  history_service:
+      - papper-history-service-network
+  papper-history-service:
     build: history_service
+    container_name: papper-history-service
     restart: unless-stopped
     volumes:
       - ./history_service:/usr/src/history_service
@@ -22,19 +24,19 @@ services:
     ports:
       - 8400:8000
     depends_on:
-      - history_service_mongo
+      - papper-history-service-mongo
     command: >
       sh -c "uvicorn main:app --host 0.0.0.0 --port 8000 --reload --log-config /usr/src/history_service/uvicorn_logging.conf"
     networks:
-      - history_services_network
+      - papper-history-service-network
       - papper-backend
 
 volumes:
-  history_service_mongo_data:
+  papper-history-service-mongo-volume:
 
 networks:
-  history_services_network:
-    name: history_services_network
+  papper-history-service-network:
+    name: papper-history-service-network
   papper-backend:
     name: papper-backend
     external: true
